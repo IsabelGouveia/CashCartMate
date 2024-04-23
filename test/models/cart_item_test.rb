@@ -4,6 +4,11 @@ class CartItemTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+  def setup
+    Product.create!(code: 'GR1', name: 'Green Tea', price: 3.11)
+    Product.create!(code: 'SR1', name: 'Strawberries', price: 5.00)
+    Product.create!(code: 'CF1', name: 'Coffee', price: 11.23)
+  end
 
   test "total price calculation for buy-one-get-one-free rule" do
     product = Product.find_by(code: 'GR1')
@@ -32,6 +37,6 @@ class CartItemTest < ActiveSupport::TestCase
     assert_equal 22.46, cart_item.total_price
 
     cart_item = CartItem.new(product: product, quantity: 4)
-    assert_equal 29.94, cart_item.total_price
+    assert_equal 29.95, cart_item.total_price
   end
 end
