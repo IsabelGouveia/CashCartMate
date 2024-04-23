@@ -4,6 +4,7 @@ class CartItem < ApplicationRecord
   belongs_to :cart
   belongs_to :product
 
+  # Calculates the total price of the cart item based on the product code
   def total_price
     case product.code
     when 'GR1'
@@ -28,11 +29,15 @@ class CartItem < ApplicationRecord
   end
 
   def discount_for_bulk_coffees
-    total_price_coffee = BigDecimal(quantity) * BigDecimal(product.price.to_s)
-    if quantity >= 3
-      discount = (BigDecimal(quantity) / BigDecimal(3)) * BigDecimal(product.price.to_s)
-      total_price_coffee -= discount
+    begin
+      total_price_coffee = BigDecimal(quantity) * BigDecimal(product.price.to_s)
+      if quantity >= 3
+        discount = (BigDecimal(quantity) / BigDecimal(3)) * BigDecimal(product.price.to_s)
+        total_price_coffee -= discount
+      end
+      total_price_coffee.round(2).to_f
+    rescue => e
+      raise StandardError, "Error: Cannot calculate discount for bulk coffees: #{e.message}"
     end
-    total_price_coffee.round(2).to_f
   end
 end
